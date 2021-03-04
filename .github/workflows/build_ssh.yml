@@ -1,10 +1,9 @@
 name: SSH NODE CI
-
 on: [push]
 
 jobs:
   build:
-
+    if: ${{ env.DEPLOY_SSH != '' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -33,3 +32,6 @@ jobs:
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           TARGET: ${{ secrets.REMOTE_TARGET }}
+          
+    env:
+      DEPLOY_SSH: ${{ secrets.NETLIFY_AUTH_TOKEN }}
