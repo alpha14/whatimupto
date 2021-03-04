@@ -4,9 +4,9 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: ${{ env.DEPLOY_SSH != '' }}
     env:
       DEPLOY_SSH: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-    if: ${{ env.DEPLOY_SSH != '' }}
 
     steps:
     - uses: actions/checkout@v2
