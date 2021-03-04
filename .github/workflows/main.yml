@@ -27,7 +27,7 @@ jobs:
       run: npm install && npm run build
 
     - name: Deploy to Github pages
-      if: ${{ env.NETLIFY == '' }}
+      if: ${{ env.NETLIFY == '' && env.DEPLOY_SSH == '' }}
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -48,6 +48,18 @@ jobs:
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
         NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
       timeout-minutes: 1
+      
+    - name: Deploy to Server
+      uses: easingthemes/ssh-deploy@v2.1.5
+      if: ${{ env.DEPLOY_SSH != '' }}
+      env:
+          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+          ARGS: "-rltgoDzvO --delete"
+          SOURCE: "_site/"
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          TARGET: ${{ secrets.REMOTE_TARGET }}
 
     env:
       NETLIFY: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      DEPLOY_SSH: ${{ secrets.REMOTE_HOST }}
